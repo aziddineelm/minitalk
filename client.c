@@ -6,85 +6,66 @@
 /*   By: ael-mans <ael-mans@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:44:06 by ael-mans          #+#    #+#             */
-/*   Updated: 2025/03/28 17:44:08 by ael-mans         ###   ########.fr       */
+/*   Updated: 2025/03/28 18:04:40 by ael-mans         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+#include "talk.h"
 
-static void	send_char_bit(int pid, char c)
+void	send_char(int pid, char c)
 {
-	int	counter;
+	int	i;
 	int	error;
 
-	counter = 7;
-	while (counter >= 0)
+	i = 7;
+	while (i >= 0)
 	{
-		if ((c >> counter) & 1)
+		if (c & (1 << i))
 			error = kill(pid, SIGUSR1);
 		else
 			error = kill(pid, SIGUSR2);
-		usleep(100);
-		counter--;
+		i--;
+		usleep(600);
 		if (error == -1)
 		{
-			ft_printf("error");
+			write(2, "Error\n", 6);
 			exit(1);
 		}
+		pause();
+		usleep(150);
 	}
 }
 
-static void	send_message(int pid, char *str)
+void	bits_to_signals(int pid, char *str)
 {
-	while (*str)
+	int	y;
+
+	y = 0;
+	while (str[y])
 	{
-		send_char_bit(pid, *str);
-		str++;
+		send_char(pid, str[y]);
+		y++;
 	}
+	send_char(pid, '\0');
 }
 
-static void	send_null_terminator(int pid)
+void	confirmation_handler(int signum)
 {
-	int	counter;
-	int	error;
-
-	counter = 7;
-	while (counter >= 0)
-	{
-		error = kill(pid, SIGUSR2);
-		usleep(100);
-		counter--;
-		if (error == -1)
-		{
-			ft_printf("error");
-			exit(1);
-		}
-	}
+	(void)signum;
 }
 
-static void	acknowledge(int signal)
-{
-	(void)signal;
-	ft_printf("message received");
-}
-
-int	main(int ac, char **av)
+int	main(int argc, char **argv)
 {
 	long	pid;
 
-	signal(SIGUSR1, acknowledge);
-	if (ac != 3)
+	if (argc == 3 && ft_isdigit(argv[1][0]))
 	{
-		ft_printf("error: provide 2 arguments only!!!");
-		exit(1);
+		pid = ft_atoi(argv[1]);
+		signal(SIGUSR1, confirmation_handler);
+		bits_to_signals(pid, argv[2]);
 	}
-	pid = ft_atoi(av[1]);
-	if (ft_strlen(av[1]) > 7 || pid <= 0 || pid > 4194304)
-	{
-		ft_printf("The provided PID is outside the valid range!");
-		exit(1);
-	}
-	send_message(pid, av[2]);
-	send_null_terminator(pid);
+	else
+		write(2, "Invalid input\n", 14);
 	return (0);
 }
