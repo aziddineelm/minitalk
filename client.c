@@ -11,9 +11,16 @@
 /* ************************************************************************** */
 
 #include "minitalk.h"
-#include "talk.h"
 
-void	send_char(int pid, char c)
+bool	g_ready;
+
+void	acknowledge_signal(int signum)
+{
+	g_ready = true;
+	(void)signum;
+}
+
+void	transmit_char(int pid, char c)
 {
 	int	i;
 	int	error;
@@ -21,6 +28,7 @@ void	send_char(int pid, char c)
 	i = 7;
 	while (i >= 0)
 	{
+		g_ready = false;
 		if (c & (1 << i))
 			error = kill(pid, SIGUSR1);
 		else
@@ -30,40 +38,30 @@ void	send_char(int pid, char c)
 		if (error == -1)
 		{
 			write(2, "Error\n", 6);
-			exit(1);
+			exit (1);
 		}
-		pause();
+		while (!g_ready)
+			;
 		usleep(150);
 	}
 }
 
-void	bits_to_signals(int pid, char *str)
+void	send_message(int pid, const char *message)
 {
-	int	y;
-
-	y = 0;
-	while (str[y])
-	{
-		send_char(pid, str[y]);
-		y++;
-	}
-	send_char(pid, '\0');
-}
-
-void	confirmation_handler(int signum)
-{
-	(void)signum;
+	while (*message)
+		transmit_char(pid, *message++);
+	transmit_char(pid, '\0');
 }
 
 int	main(int argc, char **argv)
 {
 	long	pid;
 
-	if (argc == 3 && ft_isdigit(argv[1][0]))
+	if (argc == 3 && ft_isdigit(argv[1]))
 	{
 		pid = ft_atoi(argv[1]);
-		signal(SIGUSR1, confirmation_handler);
-		bits_to_signals(pid, argv[2]);
+		signal(SIGUSR1, acknowledge_signal);
+		send_message(pid, argv[2]);
 	}
 	else
 		write(2, "Invalid input\n", 14);

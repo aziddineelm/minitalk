@@ -32,37 +32,40 @@ void	ft_putnbr(int n)
 	ft_putchar(nbr % 10 + 48);
 }
 
-int	ft_atoi(const char *str)
+int	ft_isdigit(char *str)
 {
-	int			i;
-	int			sign;
-	long long	result;
+	int	i;
 
 	i = 0;
-	sign = 1;
-	result = 0;
-	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
+	while (str[i])
 	{
-		if (str[i] == '-')
-			sign *= -1;
+		if (!(str[i] >= '0' && str[i] <= '9'))
+			return (0);
 		i++;
 	}
-	while (str[i] && str[i] >= '0' && str[i] <= '9')
-	{
-		result = result * 10 + (str[i] - '0');
-		i++;
-	}
-	return (result * sign);
+	return (1);
 }
 
-size_t	ft_strlen(const char *s)
+long	ft_atoi(const char *str)
 {
-	size_t	i;
+	long	n;
+	int		sign;
 
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
+	n = 0;
+	sign = 1;
+	while ((*str >= 9 && *str <= 13) || *str == 32)
+		str++;
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign *= -1;
+		str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+		n *= 10;
+		n += *str - 48;
+		str++;
+	}
+	return (n * sign);
 }

@@ -15,12 +15,16 @@
 
 # include <signal.h>
 # include <unistd.h>
-# include <stdbool.h>
 # include <stdlib.h>
-# include "Printf/ft_printf.h"
+# include <stdbool.h>
 
-int		ft_atoi(const char *str);
-int		ft_isdigit(int c);
+void	signal_handler(int signum, siginfo_t *info, void *context);
+void	acknowledge_signal(int signum);
+void	transmit_char(int pid, char c);
+void	send_message(int pid, const char *message);
+void	ft_putchar(char c);
 void	ft_putnbr(int n);
+int		ft_isdigit(char *str);
+long	ft_atoi(const char *str);
 
 #endif
