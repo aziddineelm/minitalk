@@ -22,7 +22,8 @@ void	signal_acknowledge(int signum, siginfo_t *info, void *context)
 	if (signum == SIGUSR1)
 		g_ready = true;
 	if (signum == SIGUSR2)
-		write(1, "Message received\n", 17);}
+		write(1, "Message received\n", 17);
+}
 
 void	transmit_char(int pid, char c)
 {
@@ -41,7 +42,7 @@ void	transmit_char(int pid, char c)
 		if (error == -1)
 		{
 			write(2, "Error\n", 6);
-			exit (1);
+			exit(1);
 		}
 		while (!g_ready)
 			;
@@ -58,7 +59,7 @@ void	send_message(int pid, const char *message)
 
 int	main(int argc, char **argv)
 {
-	long	pid;
+	long				pid;
 	struct sigaction	sa;
 
 	if (argc == 3 && ft_isdigit(argv[1]))
@@ -69,7 +70,7 @@ int	main(int argc, char **argv)
 		sigemptyset(&sa.sa_mask);
 		sigaction(SIGUSR1, &sa, NULL);
 		sigaction(SIGUSR2, &sa, NULL);
-		send_message(pid, argv[2]);;
+		send_message(pid, argv[2]);
 	}
 	else
 		write(2, "Invalid input\n", 14);

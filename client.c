@@ -37,7 +37,7 @@ void	transmit_char(int pid, char c)
 		if (error == -1)
 		{
 			write(2, "Error\n", 6);
-			exit (1);
+			exit(1);
 		}
 		while (!g_ready)
 			;

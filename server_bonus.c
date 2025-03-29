@@ -32,7 +32,14 @@ void	signal_handler(int signum, siginfo_t *info, void *context)
 		write(2, "Error\n", 6);
 	if (current_bit < 0)
 	{
-		write(1, &received_char, 1);
+		if (received_char == '\0')
+		{
+			write(1, "\n", 1);
+			if (kill(client_pid, SIGUSR2) == -1)
+				write(2, "Error\n", 6);
+		}
+		else
+			write(1, &received_char, 1);
 		received_char = 0;
 		current_bit = 7;
 	}
