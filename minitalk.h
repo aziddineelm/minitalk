@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <stdbool.h>
 
+void	handle_char_completion(int client_pid, char received_char);
 void	signal_handler(int signum, siginfo_t *info, void *context);
 void	acknowledge_signal(int signum);
 void	signal_acknowledge(int signum, siginfo_t *info, void *context);

@@ -12,6 +12,18 @@
 
 #include "minitalk.h"
 
+void	handle_char_completion(int client_pid, char received_char)
+{
+	if (received_char == '\0')
+	{
+		write(1, "\n", 1);
+		if (kill(client_pid, SIGUSR2) == -1)
+			write(2, "Error\n", 6);
+	}
+	else
+		write(1, &received_char, 1);
+}
+
 void	signal_handler(int signum, siginfo_t *info, void *context)
 {
 	static char	received_char = 0;
@@ -32,14 +44,7 @@ void	signal_handler(int signum, siginfo_t *info, void *context)
 		write(2, "Error\n", 6);
 	if (current_bit < 0)
 	{
-		if (received_char == '\0')
-		{
-			write(1, "\n", 1);
-			if (kill(client_pid, SIGUSR2) == -1)
-				write(2, "Error\n", 6);
-		}
-		else
-			write(1, &received_char, 1);
+		handle_char_completion(client_pid, received_char);
 		received_char = 0;
 		current_bit = 7;
 	}
