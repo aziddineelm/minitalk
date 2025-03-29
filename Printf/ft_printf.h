@@ -21,5 +21,8 @@ int	ft_putstr(char *str);
 int	ft_put_hex(unsigned long n, char c);
 int	ft_put_ptr(void *ptr, char c);
 int	catch_err(int n);
+int	ft_putchar(char c);
+int	ft_putnbrr(long n);
+
 
 #endif

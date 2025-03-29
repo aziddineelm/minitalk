@@ -24,9 +24,9 @@ int	format_checker(const char *formats, va_list args)
 	else if (*formats == 'x' || *formats == 'X')
 		count = ft_put_hex(va_arg(args, unsigned), *formats);
 	else if (*formats == 'd' || *formats == 'i')
-		count = ft_putnbr(va_arg(args, int));
+		count = ft_putnbrr(va_arg(args, int));
 	else if (*formats == 'u')
-		count = ft_putnbr(va_arg(args, unsigned));
+		count = ft_putnbrr(va_arg(args, unsigned));
 	else if (*formats == 'p')
 		count = ft_put_ptr(va_arg(args, void *), *formats);
 	else if (*formats == '%')

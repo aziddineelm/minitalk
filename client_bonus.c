@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client_bonus.c                                     :+:      :+:    :+:   */
+/*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ael-mans <ael-mans@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:44:06 by ael-mans          #+#    #+#             */
-/*   Updated: 2025/03/29 11:55:20 by ael-mans         ###   ########.fr       */
+/*   Updated: 2025/03/29 11:55:13 by ael-mans         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,15 @@
 
 bool	g_ready;
 
-void	acknowledge_signal(int signum)
+void	signal_acknowledge(int signum, siginfo_t *info, void *context)
 {
-	g_ready = true;
+	(void)context;
+	(void)info;
 	(void)signum;
-}
+	if (signum == SIGUSR1)
+		g_ready = true;
+	if (signum == SIGUSR2)
+		write(1, "Message received\n", 17);}
 
 void	transmit_char(int pid, char c)
 {
@@ -55,12 +59,17 @@ void	send_message(int pid, const char *message)
 int	main(int argc, char **argv)
 {
 	long	pid;
+	struct sigaction	sa;
 
 	if (argc == 3 && ft_isdigit(argv[1]))
 	{
 		pid = ft_atoi(argv[1]);
-		signal(SIGUSR1, acknowledge_signal);
-		send_message(pid, argv[2]);
+		sa.sa_sigaction = signal_acknowledge;
+		sa.sa_flags = SA_SIGINFO;
+		sigemptyset(&sa.sa_mask);
+		sigaction(SIGUSR1, &sa, NULL);
+		sigaction(SIGUSR2, &sa, NULL);
+		send_message(pid, argv[2]);;
 	}
 	else
 		write(2, "Invalid input\n", 14);

@@ -1,43 +1,33 @@
 CC = cc
-
-CFLAGS = -Wall -Werror -Wextra
-
+FLAGS = -Wall -Wextra -Werror
 SERVER = server
-
 CLIENT = client
+SRC = utils.c
 
-SERVER_SRC = server.c utils.c
+SRC_SERVER = server.c
+SRC_CLIENT = client.c
 
-CLIENT_SRC = client.c utils.c
+ifeq ($(MAKECMDGOALS),bonus)
+	SRC_SERVER = server_bonus.c
+	SRC_CLIENT = client_bonus.c
+endif
 
-SERVER_OBJ = $(SERVER_SRC:.c=.o)
-CLIENT_OBJ = $(CLIENT_SRC:.c=.o)
+all : $(SERVER) $(CLIENT)
 
-PRINTF_DIR = Printf
-PRINTF_LIB = $(PRINTF_DIR)/libftprintf.a
+bonus : fclean $(SERVER) $(CLIENT)
 
-all: $(SERVER) $(CLIENT)
+$(SERVER) : $(SRC_SERVER) $(SRC)
+	$(CC) $(FLAGS) $(SRC_SERVER) $(SRC) -o $(SERVER)
 
-$(SERVER): $(SERVER_OBJ) $(PRINTF_LIB)
-	$(CC) $(CFLAGS) -o $@ $^
+$(CLIENT) : $(SRC_CLIENT) $(SRC)
+	$(CC) $(FLAGS) $(SRC_CLIENT) $(SRC) -o $(CLIENT)
 
-$(CLIENT): $(CLIENT_OBJ) $(PRINTF_LIB)
-	$(CC) $(CFLAGS) -o $@ $^
+fclean :
+	rm -rf $(SERVER) $(CLIENT)
 
-$(PRINTF_LIB):
-	make -C $(PRINTF_DIR)
+clean  :
+	rm -rf *.o
 
-%.o: %.c minitalk.h
-	$(CC) $(CFLAGS) -c $< -o $@
+re : fclean all
 
-clean:
-	rm -f $(SERVER_OBJ) $(CLIENT_OBJ)
-	make -C $(PRINTF_DIR) clean
-
-fclean: clean
-	rm -f $(SERVER) $(CLIENT)
-	make -C $(PRINTF_DIR) fclean
-
-re: fclean all
-
-.PHONY: all clean fclean re
+.PHONY : all fclean

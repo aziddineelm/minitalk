@@ -20,6 +20,7 @@
 
 void	signal_handler(int signum, siginfo_t *info, void *context);
 void	acknowledge_signal(int signum);
+void	signal_acknowledge(int signum, siginfo_t *info, void *context);
 void	transmit_char(int pid, char c);
 void	send_message(int pid, const char *message);
 void	ft_putchar(char c);
