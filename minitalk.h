@@ -20,13 +20,15 @@
 
 void	handle_char_completion(int client_pid, char received_char);
 void	signal_handler(int signum, siginfo_t *info, void *context);
-void	acknowledge_signal(int signum);
+void	acknowledge(int signum);
 void	signal_acknowledge(int signum, siginfo_t *info, void *context);
 void	transmit_char(int pid, char c);
-void	send_message(int pid, const char *message);
+void	sender(int pid, const char *message);
+void	last_send(int pid);
 void	ft_putchar(char c);
 void	ft_putnbr(int n);
 int		ft_isdigit(char *str);
 long	ft_atoi(const char *str);
+int		ft_strlen(const char *str);
 
 #endif

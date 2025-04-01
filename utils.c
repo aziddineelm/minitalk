@@ -12,6 +12,16 @@
 
 #include "minitalk.h"
 
+int	ft_strlen(const char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] != 0)
+		i++;
+	return (i);
+}
+
 void	ft_putchar(char c)
 {
 	write(1, &c, 1);
@@ -37,6 +47,8 @@ int	ft_isdigit(char *str)
 	int	i;
 
 	i = 0;
+	if (str[i] == '-' || str[i] == '+')
+		i++;
 	while (str[i])
 	{
 		if (!(str[i] >= '0' && str[i] <= '9'))

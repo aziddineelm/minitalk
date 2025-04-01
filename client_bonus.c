@@ -65,6 +65,11 @@ int	main(int argc, char **argv)
 	if (argc == 3 && ft_isdigit(argv[1]))
 	{
 		pid = ft_atoi(argv[1]);
+		if (ft_strlen(argv[1]) > 7 || pid <= 0 || pid > 4194304)
+		{
+			write(2, "The provided PID is outside the valid range!\n", 45);
+			exit(1);
+		}
 		sa.sa_sigaction = signal_acknowledge;
 		sa.sa_flags = SA_SIGINFO;
 		sigemptyset(&sa.sa_mask);
@@ -73,6 +78,6 @@ int	main(int argc, char **argv)
 		send_message(pid, argv[2]);
 	}
 	else
-		write(2, "Invalid input\n", 14);
+		write(2, "error please provide 2 arguments only!!!\n", 41);
 	return (0);
 }
